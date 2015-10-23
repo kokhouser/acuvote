@@ -1,0 +1,6 @@
+setup.py
+ACUVote.egg-info/PKG-INFO
+ACUVote.egg-info/SOURCES.txt
+ACUVote.egg-info/dependency_links.txt
+ACUVote.egg-info/requires.txt
+ACUVote.egg-info/top_level.txt
