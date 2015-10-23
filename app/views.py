@@ -1,5 +1,5 @@
 from flask import render_template, flash, redirect, session, url_for,request
-from app import app, pycas
+from app import app
 from flask.ext.cas import CAS
 from flask.ext.cas import login_required
 
