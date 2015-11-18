@@ -15,6 +15,10 @@ PASSWORD = 'default'
 def route_home():
 	return (cas.username)
 
+@application.route("/vote")
+def vote_page():
+	return render_template('blank.html')
+
 application.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
 def connect_db():
