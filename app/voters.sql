@@ -4,12 +4,12 @@ insert into voters (fname,lname,username,class,isadmin) values ("Jeremy","Ron","
 insert into voters (fname,lname,username,class,isadmin) values ("Claire","DuCanoe","cod42o","SO",0);
 insert into voters (fname,lname,username,class,isadmin) values ("Marker","Pason","map21a","FR",1);
 delete from elections;
-insert into elections (name) values ("President")
-insert into elections (name) values ("Vice President")
+insert into elections (name) values ("President");
+insert into elections (name) values ("Vice President");
 delete from candidates;
-insert into candidates (electionid,voterid,position,votes) values (1,1,"President",0)
-insert into candidates (electionid,voterid,position,votes) values (2,1,"President",0)
-insert into candidates (electionid,voterid,position,votes) values (1,1,"President",0)
-insert into candidates (electionid,voterid,position,votes) values (1,1,"President",0)
-insert into candidates (electionid,voterid,position,votes) values (1,1,"President",0)
-insert into candidates (electionid,voterid,position,votes) values (1,1,"President",0)
+insert into candidates (electionid,voterid,position,votes) values (1,1,"President",0);
+insert into candidates (electionid,voterid,position,votes) values (2,1,"Vice President",0);
+insert into candidates (electionid,voterid,position,votes) values (1,2,"President",0);
+insert into candidates (electionid,voterid,position,votes) values (2,2,"Vice President",0);
+insert into candidates (electionid,voterid,position,votes) values (1,3,"President",0);
+insert into candidates (electionid,voterid,position,votes) values (2,4,"Vice President",0);
