@@ -1,35 +1,39 @@
 {% extends "layout.html" %}
 {% block div %}
-  <div class="panel-group" id="accordion">
-  {% for i in elections %}
-      <div class="panel panel-default" id="panel-{{ loop.index }}">
-        <div class="panel-heading">
-          <h4 class="panel-title">
-            <a data-toggle="collapse" data-target="#collapse-{{ loop.index }}" 
-               href="#collapse-{{ loop.index }}" class="collapsed">
-              {{i.name}}
-            </a>
-          </h4>
-        </div>
-        <div id="collapse-{{ loop.index }}" class="panel-collapse collapse">
-          <div class="panel-body">
-            <div class="DocumentList">
-              <ul class="list-inline">
-                <form role="form">
-                {% for j in candidates %}
-                  {% if i.id==j.electionid %}
-                    <img src="../static/img/phil.jpg" class="candidate">
-                    <label class="radio-inline">
-                      <input type="radio" name="optradio">{{j.voterid}} {{j.fname}} {{j.lname}}
-                    </label>
-                  {% endif %}
-                {% endfor %}
-                </form>
-              </ul>
+  <form  action="/vote" method="POST" >
+    <div class="panel-group" id="accordion">
+    {% for i in elections %}
+        <div class="panel panel-default" id="panel-{{ loop.index }}">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" data-target="#collapse-{{ loop.index }}" 
+                 href="#collapse-{{ loop.index }}" class="collapsed">
+                {{i.name}}
+              </a>
+            </h4>
+          </div>
+          <div id="collapse-{{ loop.index }}" class="panel-collapse collapse">
+            <div class="panel-body">
+              <div class="DocumentList">
+                <ul class="list-inline">
+             
+                  {% set rowloop = loop %}
+                  {% for j in candidates %}
+                    {% if i.id==j.electionid %}
+                       <!--  <img src="../static/img/phil.jpg" class="candidate"> -->
+                        <label class="radio-inline">
+                          <input type="radio" name="{{i.id}}" value="{{j.voterid}}">{{j.votes}} {{j.fname}} {{j.lname}}
+                        </label>
+                    {% endif %}
+                  {% endfor %}
+                
+                </ul>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-  {% endfor %}
-  </div>
+    {% endfor %}
+    </div>
+    <button type="submit">Submit Votes</button>
+  </form>
 {% endblock %}

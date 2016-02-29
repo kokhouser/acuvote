@@ -15,6 +15,7 @@ PASSWORD = 'default'
 # @login_required
 # def route_home():
 # 	return (cas.username)
+
 def connect_db():
 	return sqlite3.connect('/tmp/test.db')
 
@@ -36,14 +37,14 @@ def teardown_request(exception):
     if db is not None:
         db.close()
 
-@application.route("/vote")
+@application.route("/elections")
 def vote_page():
 	cur = g.db.execute('select * from elections')
 	elections = [dict(id=row[0], name=row[1]) for row in cur.fetchall()]
 	cur = g.db.execute('select * from candidates')
-	candidates = [dict(electionid=row[1], voterid=row[2]) for row in cur.fetchall()]
+	candidates = [dict(id=row[0], electionid=row[1], voterid=row[2], votes=row[4]) for row in cur.fetchall()]
 	for i in candidates:
-		cur = g.db.execute('select fname, lname from voters where id=%s' % i['voterid'])
+		cur = g.db.execute('select fname, lname from voters where id=(?)', [i['voterid']])
 		fetched = [dict(firstname=row[0],lastname=row[1]) for row in cur.fetchall()]
 		i['fname'] = fetched[0]['firstname']
 		i['lname'] = fetched[0]['lastname']
@@ -53,6 +54,24 @@ def vote_page():
 @application.route("/google")
 def google_page():
 	return render_template("google.html")
+
+@application.route("/vote", methods=['GET', 'POST'])
+def cast_vote():
+	print "QWQEWEE"
+	if request.method=='POST':
+		something = dict(request.form)
+		print "THIS IS SOMETHING", something
+		for key,value in something.iteritems():
+			print "THIS IS THE KEY", key
+			print "THIS IS THE VALUE", something[key][0]
+			cur2 = g.db.execute('select votes from candidates where electionid=(?) and voterid=(?)', [key, something[key][0]] )
+			fetched = [dict(votes=row[0]) for row in cur2.fetchall()]
+			print "THIS IS FETCHED", fetched
+			num_votes = fetched[0]['votes']+1
+			print "THIS IS NUM VOTES", num_votes
+			g.db.execute('update candidates set votes=(?) where electionid=(?) and voterid=(?)', [num_votes, key, something[key][0]])
+			g.db.commit()
+		return redirect(url_for('vote_page'))
 
 # @application.route("/populate")
 # def populate():
