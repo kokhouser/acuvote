@@ -34,9 +34,7 @@ create table voter_dpt (
 drop table if exists elections;
 create table elections (
 	id integer primary key autoincrement,
-	name text not null,
-	start datetime not null default GETDATE(),
-	end datetime not null default GETDATE()
+	name text not null
 );
 
 drop table if exists candidates;

@@ -5,21 +5,23 @@ from flask.ext.cas import CAS
 from flask.ext.cas import login_required
 from contextlib import closing
 
+cas = CAS()
 application = Flask(__name__)
-CAS(application)
+cas.init_app(application)
 application.config['CAS_SERVER'] = 'https://sso.acu.edu' 
 application.config['CAS_AFTER_LOGIN'] = 'route_home'
-
+application.config['CAS_VALIDATE_ROUTE'] = '/serviceValidate'
+application.debug = True
 DATABASE = '/tmp/test.db'
 DEBUG = True
 SECRET_KEY = 'development key'
 USERNAME = 'admin'
 PASSWORD = 'default'
 
-# @application.route("/")
-# @login_required
-# def route_home():
-# 	return (cas.username)
+@application.route("/")
+@login_required
+def route_home():
+	return redirect(url_for('vote_page'))
 
 def connect_db():
 	return sqlite3.connect('/tmp/test.db')
