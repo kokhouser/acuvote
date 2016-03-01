@@ -1,9 +1,14 @@
 import sqlite3
+import flask
 from flask import Flask, g, render_template, flash, redirect, session, url_for, request, abort
-from app import application
 from flask.ext.cas import CAS
 from flask.ext.cas import login_required
 from contextlib import closing
+
+application = Flask(__name__)
+CAS(application)
+application.config['CAS_SERVER'] = 'https://sso.acu.edu' 
+application.config['CAS_AFTER_LOGIN'] = 'route_home'
 
 DATABASE = '/tmp/test.db'
 DEBUG = True
@@ -78,6 +83,9 @@ def cast_vote():
 
 
 application.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
+
+if __name__ == '__main__':
+	application.run(debug=True)
 
 
 
