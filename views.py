@@ -44,25 +44,34 @@ def teardown_request(exception):
     if db is not None:
         db.close()
 
-@application.route("/elections/<id>")
-def vote_page():
-	cur = g.db.execute('select * from elections where electionid = (?)')
+@application.route("/elections/")
+@application.route("/elections/<electionid>")
+def vote_page(electionid=None):
+	cur = g.db.execute('select distinct position from candidates where electionid = (?)', [electionid])
+	positions = [dict(name=row[0]) for row in cur.fetchall()]
 	elections = [dict(id=row[0], name=row[1]) for row in cur.fetchall()]
-	for i in elections:
-		cur = g.db.execute('select * from voted where electionid=(?) and username=(?)', [i['id'], 'jrn11a'])
-		if len(cur.fetchall())==0:
-			i['voted'] = False;
-		else:
-			i['voted'] = True;
+	# for i in positions:
+	# 	cur = g.db.execute('select * from voted where electionid=(?) and username=(?)', [i['id'], 'jrn11a'])
+	# 	if len(cur.fetchall())==0:
+	# 		i['voted'] = False;
+	# 	else:
+	# 		i['voted'] = True;
+	candidates = []
+	for i in positions:
+		print i
+		cur = g.db.execute('select * from candidates inner join voters on candidates.voterid = voters.id where candidates.electionid = (?) and candidates.position = (?)', [electionid,i['name']])
+		category_candidates = [dict(id=row[0], fname=row[6], lname=row[7], voterid=row[2],votes=row[4]) for row in cur.fetchall()]	
+		candidates.append(category_candidates)
 
-	cur = g.db.execute('select * from candidates')
-	candidates = [dict(id=row[0], electionid=row[1], voterid=row[2], votes=row[4]) for row in cur.fetchall()]	
-	for i in candidates:
-		cur = g.db.execute('select fname, lname from voters where id=(?)', [i['voterid']])
-		fetched = [dict(firstname=row[0],lastname=row[1]) for row in cur.fetchall()]
-		i['fname'] = fetched[0]['firstname']
-		i['lname'] = fetched[0]['lastname']
-	return render_template("body.html", elections=elections, candidates=candidates)
+	# cur = g.db.execute('select * from candidates')
+	# candidates = [dict(id=row[0], electionid=row[1], voterid=row[2], votes=row[4]) for row in cur.fetchall()]	
+	# for i in candidates:
+	# 	cur = g.db.execute('select fname, lname from voters where id=(?)', [i['voterid']])
+	# 	fetched = [dict(firstname=row[0],lastname=row[1]) for row in cur.fetchall()]
+	# 	i['fname'] = fetched[0]['firstname']
+	# 	i['lname'] = fetched[0]['lastname']
+	print candidates
+	return render_template("body.html", positions=positions, candidates=candidates)
 	#return render_template("body.html")
 
 @application.route("/google")
