@@ -1,6 +1,9 @@
 {% extends "layout.html" %}
 {% block div %}
   <form  action="/vote" method="POST" >
+  <div class="container">
+  <div class="row">
+  <div class="col-xs-12 col-md-6">
     <div class="panel-group" id="accordion">
     {% for i in elections %}
         <div class="panel panel-default" id="panel-{{ loop.index }}">
@@ -34,6 +37,9 @@
         </div>
     {% endfor %}
     </div>
-    <button type="submit">Submit Votes</button>
+    <button class="btn btn-primary" type="submit">Submit Votes</button>
+    </div>
+    </div>
+    </div>
   </form>
 {% endblock %}

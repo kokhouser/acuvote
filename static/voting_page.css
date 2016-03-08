@@ -1,0 +1,15 @@
+body {
+	font-family: Georgia,"Times New Roman",Times,serif;
+}
+
+.navdesign {
+    background: #4d3766;
+}
+
+.navbar-default .navbar-nav > li > a {
+	color: white;
+}
+
+.navbar-default .navbar-brand {
+    color: white;
+}

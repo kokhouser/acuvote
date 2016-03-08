@@ -18,10 +18,10 @@ SECRET_KEY = 'development key'
 USERNAME = 'admin'
 PASSWORD = 'default'
 
-@application.route("/")
-@login_required
-def route_home():
-	return redirect(url_for('vote_page'))
+# @application.route("/")
+# @login_required
+# def route_home():
+# 	return redirect(url_for('vote_page'))
 
 def connect_db():
 	return sqlite3.connect('/tmp/test.db')
@@ -87,7 +87,7 @@ def cast_vote():
 application.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
 if __name__ == '__main__':
-	application.run(debug=True)
+	application.run(debug=True, host='0.0.0.0')
 
 
 
