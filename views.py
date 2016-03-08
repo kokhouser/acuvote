@@ -21,8 +21,8 @@ PASSWORD = 'default'
 # @application.route("/")
 # @login_required
 # def route_home():
+#	session['username'] = cas.username
 # 	return redirect(url_for('vote_page'))
-
 def connect_db():
 	return sqlite3.connect('/tmp/test.db')
 
@@ -47,56 +47,60 @@ def teardown_request(exception):
 @application.route("/elections/")
 @application.route("/elections/<electionid>")
 def vote_page(electionid=None):
-	cur = g.db.execute('select distinct position from candidates where electionid = (?)', [electionid])
-	positions = [dict(name=row[0]) for row in cur.fetchall()]
-	elections = [dict(id=row[0], name=row[1]) for row in cur.fetchall()]
-	# for i in positions:
-	# 	cur = g.db.execute('select * from voted where electionid=(?) and username=(?)', [i['id'], 'jrn11a'])
-	# 	if len(cur.fetchall())==0:
-	# 		i['voted'] = False;
-	# 	else:
-	# 		i['voted'] = True;
-	candidates = []
-	for i in positions:
-		print i
-		cur = g.db.execute('select * from candidates inner join voters on candidates.voterid = voters.id where candidates.electionid = (?) and candidates.position = (?)', [electionid,i['name']])
-		category_candidates = [dict(id=row[0], fname=row[6], lname=row[7], voterid=row[2],votes=row[4]) for row in cur.fetchall()]	
-		candidates.append(category_candidates)
+	# if not cas.username:
+	# 	return redirect(url_for(route_home))
+	cur = g.db.execute('select id from elections where id = (?)', [electionid])
+	if electionid and len(cur.fetchall()) == 0:
+		return render_template('body.html', error="Sorry that election does not exist. Here are some that might though.")
+	if electionid:
+		cur = g.db.execute('select * from voted where username=(?) and electionid=(?)', [cas.username,electionid])
+		if len(cur.fetchall()) > 0:
+			return render_template("body.html", error="Sorry, you have already voted for this election")
+		cur = g.db.execute('select * from elections where id = (?)', [electionid])
+		electionname = [dict(name=row[1]) for row in cur.fetchall()][0]['name']
+		cur = g.db.execute('select distinct position from candidates where electionid = (?)', [electionid])
+		positions = [dict(name=row[0]) for row in cur.fetchall()]
+		candidates = []
+		for i in positions:
+			print i
+			cur = g.db.execute('select * from candidates inner join voters on candidates.voterid = voters.id where candidates.electionid = (?) and candidates.position = (?)', [electionid,i['name']])
+			category_candidates = [dict(id=row[0], fname=row[6], lname=row[7], voterid=row[2],votes=row[4]) for row in cur.fetchall()]	
+			candidates.append(category_candidates)
 
-	# cur = g.db.execute('select * from candidates')
-	# candidates = [dict(id=row[0], electionid=row[1], voterid=row[2], votes=row[4]) for row in cur.fetchall()]	
-	# for i in candidates:
-	# 	cur = g.db.execute('select fname, lname from voters where id=(?)', [i['voterid']])
-	# 	fetched = [dict(firstname=row[0],lastname=row[1]) for row in cur.fetchall()]
-	# 	i['fname'] = fetched[0]['firstname']
-	# 	i['lname'] = fetched[0]['lastname']
-	print candidates
-	return render_template("body.html", positions=positions, candidates=candidates)
-	#return render_template("body.html")
+		print candidates
+		return render_template("body.html", electionname=electionname, electionid=electionid, positions=positions, candidates=candidates)
+	else:
+		cur = g.db.execute('select * from elections')
+		elections = [dict(id=row[0], name=row[1]) for row in cur.fetchall()]
+
+		return render_template("body.html", elections=elections, thankyou=request.args.get('thankyou'), error=request.args.get('error'))
 
 @application.route("/google")
 def google_page():
 	return render_template("google.html")
 
-@application.route("/vote", methods=['GET', 'POST'])
-def cast_vote():
+@application.route("/vote/<electionid>", methods=['GET', 'POST'])
+def cast_vote(electionid):
+	# if not cas.username:
+	# 	return redirect(url_for(route_home))
 	if request.method=='POST':
+		cur = g.db.execute('select id from elections where id=(?)',[electionid])
+		if len(cur.fetchall()) == 0:
+			return redirect(url_for('vote_page', error="Sorry that election does not exist. Here are some that might though."))
 		something = dict(request.form)
-		eid = 0
-		username = 0
+		cur = g.db.execute('select username from voted where electionid = (?) and username= (?)', [electionid, cas.username])
+		if len(cur.fetchall()) > 0:
+			return redirect(url_for('vote_page', error="Sorry you cannot vote again"))
 		for key,value in something.iteritems():
-			cur2 = g.db.execute('select votes from candidates where electionid=(?) and voterid=(?)', [key, something[key][0]] )
+			cur2 = g.db.execute('select votes from candidates where id=(?)', [key] )
 			fetched = [dict(votes=row[0]) for row in cur2.fetchall()]
 			num_votes = fetched[0]['votes']+1
-			g.db.execute('update candidates set votes=(?) where electionid=(?) and voterid=(?)', [num_votes, key, something[key][0]])
+			g.db.execute('update candidates set votes=(?) where id=(?)', [num_votes, key])
 			g.db.commit()
 
-		g.db.execute('insert into voted (electionid, username) values ((?), (?))', [eid, 'jrn11a'])
+		g.db.execute('insert into voted (electionid, username) values ((?), (?))', [electionid, cas.username])
 		g.db.commit()
-		return redirect(url_for('vote_page'))
-
-# @application.route("/populate")
-# def populate():
+		return redirect(url_for('vote_page', thankyou="Thank you for voting!"))
 
 
 application.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'

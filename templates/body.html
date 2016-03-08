@@ -1,9 +1,11 @@
 {% extends "layout.html" %}
 {% block div %}
-  <form  action="/vote" method="POST" >
+  {% if electionid and not error %}
+  <form action="/vote/{{electionid}}" method="POST" >
   <div class="container">
   <div class="row">
   <div class="col-xs-12 col-md-6">
+    <h1>{{electionname}}</h1>
     <div class="panel-group" id="accordion">
     {% for i in positions %}
         <div class="panel panel-default" id="panel-{{ loop.index }}">
@@ -24,7 +26,7 @@
                   {% for j in candidates[positions.index(i)] %}
                       <!--  <img src="../static/img/phil.jpg" class="candidate"> -->
                       <label class="radio-inline">
-                        <input type="radio" name="{{i.id}}" value="{{j.voterid}}">{{j.votes}} {{j.fname}} {{j.lname}}
+                        <input type="radio" name="{{j.id}}" value="{{j.voterid}}">{{j.votes}} {{j.fname}} {{j.lname}}
                       </label>
                   {% endfor %}
                 
@@ -40,4 +42,15 @@
     </div>
     </div>
   </form>
+  {% else %}
+  {% if error %}
+  <p>{{error}}</p>
+  {% endif %}
+  {% if thankyou %}
+  <p>{{thankyou}}</p>
+  {% endif %}
+  {% for i in elections %}
+    <h1><a href="/elections/{{i.id}}">{{i.name}}</a></h1>
+  {% endfor %}
+  {% endif %}
 {% endblock %}
