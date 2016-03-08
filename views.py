@@ -44,12 +44,19 @@ def teardown_request(exception):
     if db is not None:
         db.close()
 
-@application.route("/elections")
+@application.route("/elections/<id>")
 def vote_page():
-	cur = g.db.execute('select * from elections')
+	cur = g.db.execute('select * from elections where electionid = (?)')
 	elections = [dict(id=row[0], name=row[1]) for row in cur.fetchall()]
+	for i in elections:
+		cur = g.db.execute('select * from voted where electionid=(?) and username=(?)', [i['id'], 'jrn11a'])
+		if len(cur.fetchall())==0:
+			i['voted'] = False;
+		else:
+			i['voted'] = True;
+
 	cur = g.db.execute('select * from candidates')
-	candidates = [dict(id=row[0], electionid=row[1], voterid=row[2], votes=row[4]) for row in cur.fetchall()]
+	candidates = [dict(id=row[0], electionid=row[1], voterid=row[2], votes=row[4]) for row in cur.fetchall()]	
 	for i in candidates:
 		cur = g.db.execute('select fname, lname from voters where id=(?)', [i['voterid']])
 		fetched = [dict(firstname=row[0],lastname=row[1]) for row in cur.fetchall()]
@@ -64,20 +71,19 @@ def google_page():
 
 @application.route("/vote", methods=['GET', 'POST'])
 def cast_vote():
-	print "QWQEWEE"
 	if request.method=='POST':
 		something = dict(request.form)
-		print "THIS IS SOMETHING", something
+		eid = 0
+		username = 0
 		for key,value in something.iteritems():
-			print "THIS IS THE KEY", key
-			print "THIS IS THE VALUE", something[key][0]
 			cur2 = g.db.execute('select votes from candidates where electionid=(?) and voterid=(?)', [key, something[key][0]] )
 			fetched = [dict(votes=row[0]) for row in cur2.fetchall()]
-			print "THIS IS FETCHED", fetched
 			num_votes = fetched[0]['votes']+1
-			print "THIS IS NUM VOTES", num_votes
 			g.db.execute('update candidates set votes=(?) where electionid=(?) and voterid=(?)', [num_votes, key, something[key][0]])
 			g.db.commit()
+
+		g.db.execute('insert into voted (electionid, username) values ((?), (?))', [eid, 'jrn11a'])
+		g.db.commit()
 		return redirect(url_for('vote_page'))
 
 # @application.route("/populate")

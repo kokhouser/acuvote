@@ -6,6 +6,7 @@
   <div class="col-xs-12 col-md-6">
     <div class="panel-group" id="accordion">
     {% for i in elections %}
+      {% if not i.voted %}
         <div class="panel panel-default" id="panel-{{ loop.index }}">
           <div class="panel-heading">
             <h4 class="panel-title">
@@ -23,10 +24,10 @@
                   {% set rowloop = loop %}
                   {% for j in candidates %}
                     {% if i.id==j.electionid %}
-                       <!--  <img src="../static/img/phil.jpg" class="candidate"> -->
-                        <label class="radio-inline">
-                          <input type="radio" name="{{i.id}}" value="{{j.voterid}}">{{j.votes}} {{j.fname}} {{j.lname}}
-                        </label>
+                      <!--  <img src="../static/img/phil.jpg" class="candidate"> -->
+                      <label class="radio-inline">
+                        <input type="radio" name="{{i.id}}" value="{{j.voterid}}">{{j.votes}} {{j.fname}} {{j.lname}}
+                      </label>
                     {% endif %}
                   {% endfor %}
                 
@@ -35,6 +36,7 @@
             </div>
           </div>
         </div>
+      {% endif %}
     {% endfor %}
     </div>
     <button class="btn btn-primary" type="submit">Submit Votes</button>
