@@ -47,3 +47,12 @@ create table candidates (
 	foreign key (electionid) references elections(id),
 	foreign key (voterid) references voters(id)
 );
+
+drop table if exists voted;
+create table voted (
+	id integer primary key autoincrement,
+	electionid integer,
+	username text not null,
+	foreign key (electionid) references elections(id),
+	foreign key (username) references voters(username)
+);
