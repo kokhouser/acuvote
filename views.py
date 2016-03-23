@@ -18,11 +18,11 @@ SECRET_KEY = 'development key'
 USERNAME = 'admin'
 PASSWORD = 'default'
 
-# @application.route("/")
-# @login_required
-# def route_home():
-#	session['username'] = cas.username
-# 	return redirect(url_for('vote_page'))
+@application.route("/")
+@login_required
+def route_home():
+	return redirect(url_for('vote_page'))
+
 def connect_db():
 	return sqlite3.connect('/tmp/test.db')
 
@@ -47,8 +47,8 @@ def teardown_request(exception):
 @application.route("/elections/")
 @application.route("/elections/<electionid>")
 def vote_page(electionid=None):
-	# if not cas.username:
-	# 	return redirect(url_for(route_home))
+	if not cas.username:
+		return redirect(url_for(route_home))
 	cur = g.db.execute('select id from elections where id = (?)', [electionid])
 	if electionid and len(cur.fetchall()) == 0:
 		return render_template('body.html', error="Sorry that election does not exist. Here are some that might though.")
@@ -81,8 +81,8 @@ def google_page():
 
 @application.route("/vote/<electionid>", methods=['GET', 'POST'])
 def cast_vote(electionid):
-	# if not cas.username:
-	# 	return redirect(url_for(route_home))
+	if not cas.username:
+		return redirect(url_for(route_home))
 	if request.method=='POST':
 		cur = g.db.execute('select id from elections where id=(?)',[electionid])
 		if len(cur.fetchall()) == 0:

@@ -1,8 +1,8 @@
 delete from voters;
 insert into voters (fname,lname,username,class,isadmin) values ("Jonathan","Nix","jrn11a","SR",0);
-insert into voters (fname,lname,username,class,isadmin) values ("Jeff","Killeen","jtk13b","JR",0);
+insert into voters (fname,lname,username,class,isadmin) values ("Jeff","Killeen","jtk12b","SR",1);
 insert into voters (fname,lname,username,class,isadmin) values ("Claire","DuCanoe","cod42o","SO",0);
-insert into voters (fname,lname,username,class,isadmin) values ("Marker","Pason","map21a","FR",1);
+insert into voters (fname,lname,username,class,isadmin) values ("Marker","Pason","map21a","FR",0);
 delete from elections;
 insert into elections (name) values ("SA 2016");
 delete from candidates;
@@ -11,4 +11,3 @@ insert into candidates (electionid,voterid,position,votes) values (1,2,"Vice Pre
 insert into candidates (electionid,voterid,position,votes) values (1,3,"President",0);
 insert into candidates (electionid,voterid,position,votes) values (1,4,"Vice President",0);
 delete from voted;
-insert into voted (electionid, username) values (1, "jrn11a");
