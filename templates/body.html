@@ -6,7 +6,7 @@
   <div class="row">
   <div class="col-xs-12 col-md-6">
     <h1>{{electionname}}</h1>
-    <div class="panel-group" id="accordion">
+    <div class="panel-group elections" id="accordion">
     {% for i in positions %}
         <div class="panel panel-default" id="panel-{{ loop.index }}">
           <div class="panel-heading">
@@ -44,10 +44,10 @@
   </form>
   {% else %}
   {% if error %}
-  <p>{{error}}</p>
+  <p class="message">{{error}}</p>
   {% endif %}
   {% if thankyou %}
-  <p>{{thankyou}}</p>
+  <p class="message">{{thankyou}}</p>
   {% endif %}
   {% for i in elections %}
     <h1><a href="/elections/{{i.id}}">{{i.name}}</a></h1>
