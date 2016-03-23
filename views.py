@@ -104,6 +104,38 @@ def cast_vote(electionid):
 	else:
 		return redirect(url_for('vote_page'))
 
+@application.route("/voter_data/")
+@application.route("/voter_data/<electionid>")
+def get_votes(electionid=None):
+	if not cas.username:
+		return redirect(url_for(route_home))
+	cur = g.db.execute('select * from voters where username=(?) and isadmin=1', [cas.username])
+	if len(cur.fetchall()) == 0:
+		return redirect(url_for('vote_page', error="Invalid permissions"))
+	if electionid:
+		cur = g.db.execute('select * from elections where id=(?)', [electionid])
+		if len(cur.fetchall()) == 0:
+			return redirect(url_for('get_votes', electionid=None))
+		cur = g.db.execute('select * from elections where id=(?)', [electionid])
+                electionname = [dict(name=row[1]) for row in cur.fetchall()][0]['name']
+		cur = g.db.execute('select distinct position from candidates where electionid = (?)', [electionid])
+                positions = [dict(name=row[0]) for row in cur.fetchall()]
+                candidates = []
+                for i in positions:
+                        print i
+                        cur = g.db.execute('select * from candidates inner join voters on candidates.voterid = voters.id where candidates.electionid = (?) and candidates.position = (?)', [electionid,i['name']])
+                        category_candidates = [dict(id=row[0], fname=row[6], lname=row[7], voterid=row[2],votes=row[4]) for row in cur.fetchall()]
+                        candidates.append(category_candidates)
+
+                print candidates
+		return render_template('votes.html', positions=positions, electionid=electionid, electionname=electionname, candidates=candidates)
+
+	else:
+		cur = g.db.execute('select * from elections')
+		elections = [dict(id=row[0], name=row[1]) for row in cur.fetchall()]
+		return render_template('votes.html', elections=elections)
+		
+	
 @application.errorhandler(405)
 def no_method(e):
 	return redirect(url_for('vote_page', error="Sorry, that page does not exist. Here are the current elections.", electionid=None))
@@ -117,11 +149,3 @@ application.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
 if __name__ == '__main__':
 	application.run(debug=True, host='0.0.0.0')
-
-
-
-
-
-
-
-	
