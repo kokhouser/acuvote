@@ -98,7 +98,7 @@ def cast_vote(electionid):
 		for key,value in something.iteritems():
 			count+=1
 		if poslen != count:
-			return redirect(url_for('vote_page', electionid=electionid, error='Please Vote for all positions'))
+			return redirect(url_for('vote_page', error="Sorry, you must vote for all positions", electionid=None))
 		for key,value in something.iteritems():
 			cur2 = g.db.execute('select votes from candidates where id=(?)', [key] )
 			fetched = [dict(votes=row[0]) for row in cur2.fetchall()]

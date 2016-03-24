@@ -1,6 +1,9 @@
 {% extends "layout.html" %}
 {% block div %}
   {% if electionid and not error %}
+  {% if votingerror %}
+	<p>{{votingerror}}</p>
+  {% endif %}
   <form action="/vote/{{electionid}}" method="POST" >
   <div class="container">
   <div class="row">
