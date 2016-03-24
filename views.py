@@ -91,6 +91,14 @@ def cast_vote(electionid):
 		cur = g.db.execute('select username from voted where electionid = (?) and username= (?)', [electionid, cas.username])
 		if len(cur.fetchall()) > 0:
 			return redirect(url_for('vote_page', error="Sorry you cannot vote again", electionid=None))
+		cur = g.db.execute('select distinct position from candidates where electionid = (?)', [electionid])
+                positions = [dict(name=row[0]) for row in cur.fetchall()]
+		poslen = len(positions)
+		count = 0
+		for key,value in something.iteritems():
+			count+=1
+		if poslen != count:
+			return redirect(url_for('vote_page', electionid=electionid, error='Please Vote for all positions'))
 		for key,value in something.iteritems():
 			cur2 = g.db.execute('select votes from candidates where id=(?)', [key] )
 			fetched = [dict(votes=row[0]) for row in cur2.fetchall()]
