@@ -96,14 +96,16 @@ def cast_vote(electionid):
 		poslen = len(positions)
 		count = 0
 		for key,value in something.iteritems():
+			print "YOU ARE THE KEYS WE LOOK FOR"
+			print key, value
 			count+=1
 		if poslen != count:
 			return redirect(url_for('vote_page', error="Sorry, you must vote for all positions", electionid=None))
 		for key,value in something.iteritems():
-			cur2 = g.db.execute('select votes from candidates where id=(?)', [key] )
+			cur2 = g.db.execute('select votes from candidates where id=(?)', [value[0]] )
 			fetched = [dict(votes=row[0]) for row in cur2.fetchall()]
 			num_votes = fetched[0]['votes']+1
-			g.db.execute('update candidates set votes=(?) where id=(?)', [num_votes, key])
+			g.db.execute('update candidates set votes=(?) where id=(?)', [num_votes, value[0]])
 			g.db.commit()
 
 		g.db.execute('insert into voted (electionid, username) values ((?), (?))', [electionid, cas.username])

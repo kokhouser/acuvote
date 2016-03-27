@@ -29,7 +29,7 @@
                   {% for j in candidates[positions.index(i)] %}
                       <!--  <img src="../static/img/phil.jpg" class="candidate"> -->
                       <label class="radio-inline">
-                        <input type="radio" name="{{j.id}}" value="{{j.voterid}}">{{j.fname}} {{j.lname}}
+                        <input type="radio" name="{{i.name}}" value={{j.id}}>{{j.fname}} {{j.lname}}
                       </label>
                   {% endfor %}
                 
