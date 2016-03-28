@@ -68,12 +68,12 @@ def vote_page(electionid=None):
 			candidates.append(category_candidates)
 
 		print candidates
-		return render_template("body.html", electionname=electionname, electionid=electionid, positions=positions, candidates=candidates)
+		return render_template("other.html", electionname=electionname, electionid=electionid, positions=positions, candidates=candidates)
 	else:
 		cur = g.db.execute('select * from elections')
 		elections = [dict(id=row[0], name=row[1]) for row in cur.fetchall()]
 
-		return render_template("body.html", elections=elections, thankyou=request.args.get('thankyou'), error=request.args.get('error'))
+		return render_template("other.html", elections=elections, thankyou=request.args.get('thankyou'), error=request.args.get('error'))
 
 @application.route("/google")
 def google_page():
