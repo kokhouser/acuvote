@@ -4,8 +4,8 @@ body {
 
 a:link {color: #4d3766;}      /* unvisited link */
 a:visited {color: #4d3766;}   /* visited link */
-a:hover {color: #4d3766;}     /* mouse over link */
-a:active {color: #4d3766;}    /* selected link */
+a:hover {color: #555555;}     /* mouse over link */
+a:active {color: #555555;}    /* selected link */
 
 
 h1 {
