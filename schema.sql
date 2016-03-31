@@ -53,6 +53,9 @@ create table voted (
 	id integer primary key autoincrement,
 	electionid integer,
 	username text not null,
+	candidateid integer not null,
+	votetime datetime not null,
+	foreign key (candidateid) references candidates(id),
 	foreign key (electionid) references elections(id),
 	foreign key (username) references voters(username)
 );

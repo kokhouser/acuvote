@@ -68,12 +68,12 @@ def vote_page(electionid=None):
 			candidates.append(category_candidates)
 
 		print candidates
-		return render_template("other.html", electionname=electionname, electionid=electionid, positions=positions, candidates=candidates)
+		return render_template("body.html", electionname=electionname, electionid=electionid, positions=positions, candidates=candidates)
 	else:
 		cur = g.db.execute('select * from elections')
 		elections = [dict(id=row[0], name=row[1]) for row in cur.fetchall()]
 
-		return render_template("other.html", elections=elections, thankyou=request.args.get('thankyou'), error=request.args.get('error'))
+		return render_template("body.html", elections=elections, thankyou=request.args.get('thankyou'), error=request.args.get('error'))
 
 @application.route("/google")
 def google_page():
@@ -107,9 +107,11 @@ def cast_vote(electionid):
 			num_votes = fetched[0]['votes']+1
 			g.db.execute('update candidates set votes=(?) where id=(?)', [num_votes, value[0]])
 			g.db.commit()
+			g.db.execute('insert into voted (electionid, username, candidateid, votetime) values ((?), (?), (?), DateTime("now"))', [electionid, cas.username, value[0]])
+                	g.db.commit()
 
-		g.db.execute('insert into voted (electionid, username) values ((?), (?))', [electionid, cas.username])
-		g.db.commit()
+		#g.db.execute('insert into voted (electionid, username) values ((?), (?))', [electionid, cas.username])
+		#g.db.commit()
 		return redirect(url_for('vote_page', thankyou="Thank you for voting!", electionid=None))
 	else:
 		return redirect(url_for('vote_page'))

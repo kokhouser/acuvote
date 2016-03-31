@@ -46,11 +46,16 @@
     </div>
   </form>
   {% else %}
+  <h1>Current Elections</h1>
   {% if error %}
-  <p class="message">{{error}}</p>
+  <div class="alert alert-danger">
+  {{error}}
+  </div>
   {% endif %}
   {% if thankyou %}
-  <p class="message">{{thankyou}}</p>
+  <div class="alert alert-success">
+  <strong>Success!</strong> {{thankyou}}
+</div>
   {% endif %}
   {% for i in elections %}
     <h1><a href="/elections/{{i.id}}">{{i.name}}</a></h1>
