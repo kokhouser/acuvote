@@ -1,64 +1,156 @@
-{% extends "layout.html" %}
-{% block div %}
-  {% if electionid and not error %}
-  {% if votingerror %}
-	<p>{{votingerror}}</p>
-  {% endif %}
-  <form action="/vote/{{electionid}}" method="POST" >
-  <div class="container">
-  <div class="row">
-  <div class="col-xs-12 col-md-6">
-    <h1>{{electionname}}</h1>
-    <div class="panel-group elections" id="accordion">
-    {% for i in positions %}
-        <div class="panel panel-default" id="panel-{{ loop.index }}">
-          <div class="panel-heading">
-            <h4 class="panel-title">
-              <a data-toggle="collapse" data-target="#collapse-{{ loop.index }}" 
-                 href="#collapse-{{ loop.index }}" class="collapsed">
-                {{i.name}}
-              </a>
-            </h4>
+<!doctype html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vote</title>
+  <link rel=stylesheet media="screen" href="../static/bootstrap.css">
+  <!-- <link rel=stylesheet type=text/css href="../static/style.css">
+  <link rel=stylesheet type=text/css href="../static/voting_page.css"> -->
+  <link rel=stylesheet type=text/css href="../static/creative.css">
+   <!-- Custom Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="../static/font-awesome/css/font-awesome.min.css" type="text/css">
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="../static/animate.min.css" type="text/css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../static/creative.css" type="text/css">
+</head>
+<body id="page-top">
+  <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+      <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand page-scroll" href="#page-top">vote.acu.edu</a>
           </div>
-          <div id="collapse-{{ loop.index }}" class="panel-collapse collapse">
-            <div class="panel-body">
-              <div class="DocumentList">
-                <ul class="list-inline">
-             
-                  {% set rowloop = loop %}
-                  {% for j in candidates[positions.index(i)] %}
-                      <!--  <img src="../static/img/phil.jpg" class="candidate"> -->
-                      <label class="radio-inline">
-                        <input type="radio" name="{{i.name}}" value={{j.id}}>{{j.fname}} {{j.lname}}
-                      </label>
-                  {% endfor %}
-                
-                </ul>
-              </div>
+
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav navbar-right">
+                  <li>
+                      <a class="page-scroll" href="#about">About</a>
+                  </li>
+                  <!-- <li>
+                      <a class="page-scroll" href="#services">Services</a>
+                  </li>
+                  <li>
+                      <a class="page-scroll" href="#portfolio">Portfolio</a>
+                  </li>
+                  <li>
+                      <a class="page-scroll" href="#contact">Contact</a>
+                  </li> -->
+              </ul>
+          </div>
+          <!-- /.navbar-collapse -->
+      </div>
+      <!-- /.container-fluid -->
+  </nav>
+  <header>
+      <div class="header-content">
+          <div class="header-content-inner">
+
+            <div class="box">
+              <h1>Student Association Executive Elections</h1>
             </div>
+              <hr>
+              {% if electionid %}
+              <a href="#voting" class="btn btn-primary btn-xl page-scroll">Vote Now</a>
+              {% else %}
+              <a href="/elections/1" class="btn btn-primary btn-xl page-scroll">Vote Now</a>
+              {% endif %}
           </div>
+      </div>
+  </header>
+  <section class="bg-primary" id="voting">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                {% if electionid and not error %}
+                    <h2 class="section-heading">Please Vote Now!</h2>
+                    <hr class="light">
+                    
+                    {% if votingerror %}
+                    <p>{{votingerror}}</p>
+                    {% endif %}
+                    <form action="/vote/{{electionid}}" method="POST" >
+                    <div id="votenow">
+                    <div class="col-xs-12">
+                      <!-- <h1>{{electionname}}</h1> -->
+                      <div class="panel-group elections" id="accordion">
+                      {% for i in positions %}
+                          <div class="panel panel-default" id="panel-{{ loop.index }}">
+                            <div class="panel-heading">
+                              <h4 class="panel-title">
+                                <a data-toggle="collapse" data-target="#collapse-{{ loop.index }}" 
+                                   href="#collapse-{{ loop.index }}" class="collapsed">
+                                  {{i.name}}
+                                </a>
+                              </h4>
+                            </div>
+                            <div id="collapse-{{ loop.index }}" class="panel-collapse collapse">
+                              <div class="panel-body">
+                                <div class="DocumentList">
+                                  <ul class="list-inline">
+                               
+                                    {% set rowloop = loop %}
+                                    {% for j in candidates[positions.index(i)] %}
+                                        <!--  <img src="../static/img/phil.jpg" class="candidate"> -->
+                                        <label class="radio-inline">
+                                          <input type="radio" name="{{i.name}}" value={{j.id}} required>{{j.fname}} {{j.lname}}
+                                        </label>
+                                    {% endfor %}
+                                  
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                      {% endfor %}
+                      </div>
+                      <button class="btn btn-default btn-xl" type="submit">Submit Votes</button>
+                      </div>
+                      </div>
+                    </form>
+                    {% else %}
+                    
+                    <!-- <h2 class="section-heading">Please Vote Now!</h2> -->
+                    {% if error %}
+                    <h2 class="section-heading">{{error}}</h2>
+                    {% endif %}
+                    {% if thankyou %}
+                    <h2 class="section-heading">Thank You For Voting!</h2>
+                    {% endif %}
+                    {% if not error and not thankyou %}
+                    {% for i in elections %}
+                    <h1 class="section-heading">Current Elections</h1>
+                      <h1><a href="/elections/{{i.id}}">{{i.name}}</a></h1>
+                    {% endfor %}
+                    {% endif %}
+                    {% endif %}
+                   <!--  <p class="text-faded">Start Bootstrap has everything you need to get your new website up and running in no time! All of the templates and themes on Start Bootstrap are open source, free to download, and easy to use. No strings attached!</p> -->
+                </div>
+            </div>
         </div>
-    {% endfor %}
-    </div>
-    <button class="btn btn-primary" type="submit">Submit Votes</button>
-    </div>
-    </div>
-    </div>
-  </form>
-  {% else %}
-  <h1>Current Elections</h1>
-  {% if error %}
-  <div class="alert alert-danger">
-  {{error}}
+    </section>
+
+
+  <div class="mainnav">
+  <!-- <a class="homelink" href="">vote.acu.edu</a> -->
   </div>
-  {% endif %}
-  {% if thankyou %}
-  <div class="alert alert-success">
-  <strong>Success!</strong> {{thankyou}}
-</div>
-  {% endif %}
-  {% for i in elections %}
-    <h1><a href="/elections/{{i.id}}">{{i.name}}</a></h1>
-  {% endfor %}
-  {% endif %}
-{% endblock %}
+<script src="http://code.jquery.com/jquery.js"></script>
+  <script src="../static/bootstrap.js"></script>
+  <!-- Plugin JavaScript -->
+    <script src="../static/jquery.easing.min.js"></script>
+    <script src="../static/jquery.fittext.js"></script>
+    <script src="../static/wow.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="../static/creative.js"></script>
+</body>

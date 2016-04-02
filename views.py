@@ -47,15 +47,15 @@ def teardown_request(exception):
 @application.route("/elections/")
 @application.route("/elections/<electionid>")
 def vote_page(electionid=None):
-	if not cas.username:
-		return redirect(url_for(route_home))
+	# if not cas.username:
+	# 	return redirect(url_for(route_home))
 	cur = g.db.execute('select id from elections where id = (?)', [electionid])
 	if electionid and len(cur.fetchall()) == 0:
 		return redirect(url_for('vote_page', error='Sorry, this election does not exist. Here are some current elections that you can choose from.', electionid=None))
 	if electionid:
-		cur = g.db.execute('select * from voted where username=(?) and electionid=(?)', [cas.username,electionid])
+		cur = g.db.execute('select * from voted where username=(?) and electionid=(?)', ["jtk12b",electionid])
 		if len(cur.fetchall()) > 0:
-			return redirect(url_for('vote_page', error='Sorry, you have already voted for this election. Please select another election.', electionid=None))
+			return redirect(url_for('vote_page', error='Sorry, you have already voted for this election.', electionid=None))
 		cur = g.db.execute('select * from elections where id = (?)', [electionid])
 		electionname = [dict(name=row[1]) for row in cur.fetchall()][0]['name']
 		cur = g.db.execute('select distinct position from candidates where electionid = (?)', [electionid])
@@ -81,14 +81,14 @@ def google_page():
 
 @application.route("/vote/<electionid>", methods=['POST'])
 def cast_vote(electionid):
-	if not cas.username:
-		return redirect(url_for(route_home))
+	# if not cas.username:
+	# 	return redirect(url_for(route_home))
 	if request.method=='POST':
 		cur = g.db.execute('select id from elections where id=(?)',[electionid])
 		if len(cur.fetchall()) == 0:
 			return redirect(url_for('vote_page', error="Sorry that election does not exist. Here are some that might though.", electionid=None))
 		something = dict(request.form)
-		cur = g.db.execute('select username from voted where electionid = (?) and username= (?)', [electionid, cas.username])
+		cur = g.db.execute('select username from voted where electionid = (?) and username= (?)', [electionid, "jtk12b"])
 		if len(cur.fetchall()) > 0:
 			return redirect(url_for('vote_page', error="Sorry you cannot vote again", electionid=None))
 		cur = g.db.execute('select distinct position from candidates where electionid = (?)', [electionid])
@@ -107,7 +107,7 @@ def cast_vote(electionid):
 			num_votes = fetched[0]['votes']+1
 			g.db.execute('update candidates set votes=(?) where id=(?)', [num_votes, value[0]])
 			g.db.commit()
-			g.db.execute('insert into voted (electionid, username, candidateid, votetime) values ((?), (?), (?), DateTime("now"))', [electionid, cas.username, value[0]])
+			g.db.execute('insert into voted (electionid, username, candidateid, votetime) values ((?), (?), (?), DateTime("now"))', [electionid, "jtk12b", value[0]])
                 	g.db.commit()
 
 		#g.db.execute('insert into voted (electionid, username) values ((?), (?))', [electionid, cas.username])
@@ -119,9 +119,9 @@ def cast_vote(electionid):
 @application.route("/voter_data/")
 @application.route("/voter_data/<electionid>")
 def get_votes(electionid=None):
-	if not cas.username:
-		return redirect(url_for(route_home))
-	cur = g.db.execute('select * from voters where username=(?) and isadmin=1', [cas.username])
+	# if not cas.username:
+	# 	return redirect(url_for(route_home))
+	cur = g.db.execute('select * from voters where username=(?) and isadmin=1', ["jtk12b"])
 	if len(cur.fetchall()) == 0:
 		return redirect(url_for('vote_page', error="Invalid permissions"))
 	if electionid:

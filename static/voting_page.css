@@ -1,15 +1,20 @@
-body {
+/*body {
+	margin-top: -21px;
 	font-family: Georgia,"Times New Roman",Times,serif;
 }
 
-a:link {color: #4d3766;}      /* unvisited link */
-a:visited {color: #4d3766;}   /* visited link */
-a:hover {color: #555555;}     /* mouse over link */
-a:active {color: #555555;}    /* selected link */
+a:link {color: #4d3766;}      /* unvisited link 
+a:visited {color: #4d3766;}   /* visited link 
+a:hover {color: #555555;}     /* mouse over link 
+a:active {color: #555555;}    /* selected link 
 
 
 h1 {
 	margin-left: 10px;
+}
+
+nav {
+	width: 100%;
 }
 
 .message {
@@ -17,7 +22,7 @@ h1 {
 }
 
 .navdesign {
-    background: #4d3766;
+   float: left;
 }
 
 .navbar-default .navbar-nav > li > a {
@@ -27,3 +32,21 @@ h1 {
 .navbar-default .navbar-brand {
     color: white;
 }
+
+.votecontainer {
+	width: 100%;
+}
+
+.mainnav {
+	height: 400px;
+	background: url('img/background.jpg');
+	background-size: cover;
+  	background-position: center;
+ 	background-attachment: fixed;
+ 	z-index: -1;
+}
+
+.homelink {
+	z-index: 1
+}
+*/
