@@ -63,7 +63,7 @@
               {% if electionid %}
               <a href="#voting" class="btn btn-primary btn-xl page-scroll">Vote Now</a>
               {% else %}
-              <a href="/elections/1" class="btn btn-primary btn-xl page-scroll">Vote Now</a>
+              <a href="/elections/1#voting" class="btn btn-primary btn-xl page-scroll">Vote Now</a>
               {% endif %}
           </div>
       </div>
@@ -89,7 +89,7 @@
                             <div class="panel-heading">
                               <h4 class="panel-title">
                                 <a data-toggle="collapse" data-target="#collapse-{{ loop.index }}" 
-                                   href="#collapse-{{ loop.index }}" class="collapsed">
+                                   href="#collapse-{{ loop.index }}" class="collapsed pos">
                                   {{i.name}}
                                 </a>
                               </h4>

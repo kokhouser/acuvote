@@ -482,3 +482,6 @@ label {
 /*.box {
     background-color: rgba(0, 0, 0, 0.5);
 }*/
+.pos:hover {
+	color: black;	
+}
