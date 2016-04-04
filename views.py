@@ -1,5 +1,6 @@
 import sqlite3
 import flask
+from datetime import datetime, timedelta
 from flask import Flask, g, render_template, flash, redirect, session, url_for, request, abort
 from flask.ext.cas import CAS
 from flask.ext.cas import login_required
@@ -49,10 +50,15 @@ def teardown_request(exception):
 def vote_page(electionid=None):
 	if not cas.username:
 		return redirect(url_for(route_home))
+	current_time = datetime.now() - timedelta(hours=5)
 	cur = g.db.execute('select id from elections where id = (?)', [electionid])
 	if electionid and len(cur.fetchall()) == 0:
 		return redirect(url_for('vote_page', _anchor="voting", error='Sorry, this election does not exist. Here are some current elections that you can choose from.', electionid=None))
 	if electionid:
+		if current_time < datetime(2016, 4, 6, 11, 30, 0, 0):
+			return redirect(url_for('vote_page', _anchor="voting", error='Sorry, this election is not available yet. Please wait until 11:30 A.M April 6th.', electionid=None))
+		if current_time > datetime(2016, 4, 7, 17, 0, 0, 0):
+			return redirect(url_for('vote_page', _anchor="voting", error='Sorry, this election is closed. Please wait for the results.', electionid=None))
 		cur = g.db.execute('select * from voted where username=(?) and electionid=(?)', [cas.username,electionid])
 		if len(cur.fetchall()) > 0:
 			return redirect(url_for('vote_page', _anchor="voting", error='Sorry, you have already voted for this election.', electionid=None))

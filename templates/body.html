@@ -35,7 +35,7 @@
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav navbar-right">
                   <li>
-                      <a class="page-scroll" href="#about">About</a>
+                      <a class="page-scroll" href="http://www.acustudents.org/">About</a>
                   </li>
                   <!-- <li>
                       <a class="page-scroll" href="#services">Services</a>
@@ -57,7 +57,7 @@
           <div class="header-content-inner">
 
             <div class="box">
-              <h1>Student Association Executive Elections</h1>
+              <h1>Students' Association Executive Elections</h1>
             </div>
               <hr>
               {% if electionid %}
@@ -126,6 +126,7 @@
                     {% endif %}
                     {% if thankyou %}
                     <h2 class="section-heading">Thank You For Voting!</h2>
+		    <h4 class="section-heading">For more information about upcoming events, news, and ways to make a difference at ACU, check out our website <a href="http://www.acustudents.org">here!</a></h4>
                     {% endif %}
                     {% if not error and not thankyou %}
                     {% for i in elections %}
